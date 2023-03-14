@@ -1,27 +1,79 @@
-
 import pygame
-import sys
-from pygame.locals import *
+import os
 
-# Set up pygame
-pygame.init()
+WIDTH, HEIGHT = 900, 500
 
-windowSurface = pygame.display.set_mode((500, 400), 0, 32)
+WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("First Game")
 
-# Set up colors
-BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
+BLACK = (0, 0, 0)
 
-# set up fonts
-basicFont = pygame.font.SysFont('Times New Roman', 48)
+BORDER = pygame.Rect(WIDTH/2 - 5, 0, 10, HEIGHT)
 
-# set up the text
-text = basicFont.render('Hi Jim', True, WHITE, BLUE)
-textRect = text.get_rect()
+FPS = 60
+VEL = 5
+SPACESHIP_WIDTH, SPACESHIP_HEIGHT = 55, 40
 
-textRect.centerx = windowSurface.get_rect().centerx
-textRect.centery = windowSurface.get_rect().centery
+YELLOW_SPACESHIP_IMAGE = pygame.image.load(os.path.join('Assets', 'spaceship_yellow.png'))
+YELLOW_SPACESHIP = pygame.transform.rotate(pygame.transform.scale(YELLOW_SPACESHIP_IMAGE,
+                                                                  (SPACESHIP_WIDTH, SPACESHIP_HEIGHT)), 90)
 
+RED_SPACESHIP_IMAGE = pygame.image.load(os.path.join('Assets', 'spaceship_red.png'))
+RED_SPACESHIP = pygame.transform.rotate(pygame.transform.scale
+                                        (RED_SPACESHIP_IMAGE, (SPACESHIP_WIDTH, SPACESHIP_HEIGHT)), 270)
+
+
+def draw_window(red, yellow):
+    WIN.fill(WHITE)
+    pygame.draw.rect(WIN, BLACK, BORDER)
+    WIN.blit(YELLOW_SPACESHIP, (yellow.x, yellow.y))
+    WIN.blit(RED_SPACESHIP, (red.x, red.y))
+    pygame.display.update()
+
+
+def yellow_movement(keys_pressed, yellow):
+    if keys_pressed[pygame.K_a] and yellow.x - VEL > 0:  # Left
+        yellow.x -= VEL
+    if keys_pressed[pygame.K_d] and yellow.x + SPACESHIP_WIDTH + VEL < BORDER.x:  # Right
+        yellow.x += VEL
+    if keys_pressed[pygame.K_w] and yellow.y - VEL > 0:  # Up
+        yellow.y -= VEL
+    if keys_pressed[pygame.K_s] and yellow.y + VEL + SPACESHIP_HEIGHT + 10 < HEIGHT:  # Down
+        yellow.y += VEL
+
+
+def red_movement(keys_pressed, red):
+    if keys_pressed[pygame.K_LEFT]:  # Left
+        red.x -= VEL
+    if keys_pressed[pygame.K_RIGHT]:  # Right
+        red.x += VEL
+    if keys_pressed[pygame.K_UP]:  # Up
+        red.y -= VEL
+    if keys_pressed[pygame.K_DOWN]:  # Down
+        red.y += VEL
+
+
+def main_f():
+    red = pygame.Rect(700, 300, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
+    yellow = pygame.Rect(100, 300, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
+
+    clock = pygame.time.Clock()
+    run = True
+    while run:
+        clock.tick(FPS)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+
+        keys_pressed = pygame.key.get_pressed()
+        yellow_movement(keys_pressed, yellow)
+        red_movement(keys_pressed, red)
+
+        draw_window(red, yellow)
+
+    pygame.quit()
+
+
+if __name__ == "__main__":
+    main_f()
