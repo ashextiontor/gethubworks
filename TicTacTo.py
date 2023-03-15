@@ -10,6 +10,7 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('TicTacTo')
 
 X_O_FONT = pygame.font.SysFont('comicsans', 100)
+WINNER_FONT = pygame.font.SysFont('comicsans', 50)
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -28,6 +29,16 @@ def draw_window(spaces, spaces2, letters):
         i += 1
 
     pygame.display.update()
+
+
+def draw_winner(winner):
+    WIN.fill(WHITE)
+
+    winner_text = WINNER_FONT.render('The winner is ' + str(winner), True, BLACK)
+    WIN.blit(winner_text, (WIDTH/2 - winner_text.get_width() / 2, HEIGHT/2 - winner_text.get_height()))
+
+    pygame.display.update()
+    pygame.time.delay(5000)
 
 
 def player_1_place(keys_pressed, letters, player_1_letter, turn):
@@ -78,15 +89,15 @@ def player_1_place(keys_pressed, letters, player_1_letter, turn):
 def player_2_place(keys_pressed, letters, player_2_letter, turn):
     if turn == 1:
         next_turn = 0
-        if keys_pressed[pygame.K_9] and letters[8] == '':
+        if keys_pressed[pygame.K_l] and letters[8] == '':
             letters[8] = player_2_letter
             next_turn = 1
 
-        if keys_pressed[pygame.K_8] and letters[7] == '':
+        if keys_pressed[pygame.K_k] and letters[7] == '':
             letters[7] = player_2_letter
             next_turn = 1
 
-        if keys_pressed[pygame.K_7] and letters[6] == '':
+        if keys_pressed[pygame.K_j] and letters[6] == '':
             letters[6] = player_2_letter
             next_turn = 1
 
@@ -102,15 +113,15 @@ def player_2_place(keys_pressed, letters, player_2_letter, turn):
             letters[3] = player_2_letter
             next_turn = 1
 
-        if keys_pressed[pygame.K_l] and letters[2] == '':
+        if keys_pressed[pygame.K_9] and letters[2] == '':
             letters[2] = player_2_letter
             next_turn = 1
 
-        if keys_pressed[pygame.K_k] and letters[1] == '':
+        if keys_pressed[pygame.K_8] and letters[1] == '':
             letters[1] = player_2_letter
             next_turn = 1
 
-        if keys_pressed[pygame.K_j] and letters[0] == '':
+        if keys_pressed[pygame.K_7] and letters[0] == '':
             letters[0] = player_2_letter
             next_turn = 1
 
@@ -119,12 +130,36 @@ def player_2_place(keys_pressed, letters, player_2_letter, turn):
     return [letters, turn]
 
 
+def check_win(board, letter):
+    if board[0] == letter and board[1] == letter and board[2] == letter:
+        return True
+    if board[3] == letter and board[4] == letter and board[5] == letter:
+        return True
+    if board[6] == letter and board[7] == letter and board[8] == letter:
+        return True
+
+    if board[0] == letter and board[3] == letter and board[6] == letter:
+        return True
+    if board[1] == letter and board[4] == letter and board[7] == letter:
+        return True
+    if board[2] == letter and board[5] == letter and board[8] == letter:
+        return True
+
+    if board[0] == letter and board[4] == letter and board[8] == letter:
+        return True
+    if board[2] == letter and board[4] == letter and board[6] == letter:
+        return True
+
+    return False
+
+
 def main_f():
     # DEFINE ALL MAIN VARIABLES
 
     spaces = []
     spaces2 = []
     letters = ['', '', '', '', '', '', '', '', '']
+    winner = ''
     temp_x = WIDTH/4
     temp_y = 10
     space_width = 160
@@ -154,7 +189,6 @@ def main_f():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-                pygame.quit()
 
         if not run:
             break
@@ -163,7 +197,18 @@ def main_f():
         letters, turn = player_1_place(keys_pressed, letters, player_1_letter, turn)
         letters, turn = player_2_place(keys_pressed, letters, player_2_letter, turn)
 
+        if check_win(letters, player_1_letter):
+            winner = 'Player 1!'
+            break
+        if check_win(letters, player_2_letter):
+            winner = 'Player 2!'
+            break
+
         draw_window(spaces, spaces2, letters)
+
+    if winner != '':
+        draw_winner(winner)
+        main_f()
 
 
 main_f()
