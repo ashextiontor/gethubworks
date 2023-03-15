@@ -9,6 +9,8 @@ WIDTH, HEIGHT = 900, 500
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('TicTacTo')
 
+FPS = 60
+
 X_O_FONT = pygame.font.SysFont('comicsans', 100)
 WINNER_FONT = pygame.font.SysFont('comicsans', 50)
 
@@ -198,7 +200,9 @@ def main_f():
         temp_row += 1
 
     run = True
+    clock = pygame.time.Clock()
     while run:
+        clock.tick(FPS)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
