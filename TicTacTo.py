@@ -14,9 +14,10 @@ WINNER_FONT = pygame.font.SysFont('comicsans', 50)
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+RED = (255, 0, 0)
 
 
-def draw_window(spaces, spaces2, letters):
+def draw_window(spaces, spaces2, letters, turn):
     WIN.fill(WHITE)
     for space in spaces:
         pygame.draw.rect(WIN, BLACK, space)
@@ -28,17 +29,18 @@ def draw_window(spaces, spaces2, letters):
         WIN.blit(space_text, (space.x + 35, space.y + 5))
         i += 1
 
+    turn_text = X_O_FONT.render(str(turn), True, BLACK)
+    WIN.blit(turn_text, (20, 0))
+
     pygame.display.update()
 
 
 def draw_winner(winner):
-    WIN.fill(WHITE)
-
-    winner_text = WINNER_FONT.render('The winner is ' + str(winner), True, BLACK)
+    winner_text = WINNER_FONT.render(str(winner), True, RED)
     WIN.blit(winner_text, (WIDTH/2 - winner_text.get_width() / 2, HEIGHT/2 - winner_text.get_height()))
 
     pygame.display.update()
-    pygame.time.delay(5000)
+    pygame.time.delay(3000)
 
 
 def player_1_place(keys_pressed, letters, player_1_letter, turn):
@@ -89,39 +91,39 @@ def player_1_place(keys_pressed, letters, player_1_letter, turn):
 def player_2_place(keys_pressed, letters, player_2_letter, turn):
     if turn == 1:
         next_turn = 0
-        if keys_pressed[pygame.K_l] and letters[8] == '':
+        if keys_pressed[pygame.K_KP3] and letters[8] == '':
             letters[8] = player_2_letter
             next_turn = 1
 
-        if keys_pressed[pygame.K_k] and letters[7] == '':
+        if keys_pressed[pygame.K_KP2] and letters[7] == '':
             letters[7] = player_2_letter
             next_turn = 1
 
-        if keys_pressed[pygame.K_j] and letters[6] == '':
+        if keys_pressed[pygame.K_KP1] and letters[6] == '':
             letters[6] = player_2_letter
             next_turn = 1
 
-        if keys_pressed[pygame.K_o] and letters[5] == '':
+        if keys_pressed[pygame.K_KP6] and letters[5] == '':
             letters[5] = player_2_letter
             next_turn = 1
 
-        if keys_pressed[pygame.K_i] and letters[4] == '':
+        if keys_pressed[pygame.K_KP5] and letters[4] == '':
             letters[4] = player_2_letter
             next_turn = 1
 
-        if keys_pressed[pygame.K_u] and letters[3] == '':
+        if keys_pressed[pygame.K_KP4] and letters[3] == '':
             letters[3] = player_2_letter
             next_turn = 1
 
-        if keys_pressed[pygame.K_9] and letters[2] == '':
+        if keys_pressed[pygame.K_KP9] and letters[2] == '':
             letters[2] = player_2_letter
             next_turn = 1
 
-        if keys_pressed[pygame.K_8] and letters[1] == '':
+        if keys_pressed[pygame.K_KP8] and letters[1] == '':
             letters[1] = player_2_letter
             next_turn = 1
 
-        if keys_pressed[pygame.K_7] and letters[0] == '':
+        if keys_pressed[pygame.K_KP7] and letters[0] == '':
             letters[0] = player_2_letter
             next_turn = 1
 
@@ -150,6 +152,17 @@ def check_win(board, letter):
     if board[2] == letter and board[4] == letter and board[6] == letter:
         return True
 
+    return False
+
+
+def check_tie(board):
+    not_empty = 0
+    for i in board:
+        if i != '':
+            not_empty += 1
+
+    if not_empty == len(board):
+        return True
     return False
 
 
@@ -197,14 +210,17 @@ def main_f():
         letters, turn = player_1_place(keys_pressed, letters, player_1_letter, turn)
         letters, turn = player_2_place(keys_pressed, letters, player_2_letter, turn)
 
+        draw_window(spaces, spaces2, letters, turn)
+
         if check_win(letters, player_1_letter):
-            winner = 'Player 1!'
+            winner = 'The winner is Player 1!'
             break
         if check_win(letters, player_2_letter):
-            winner = 'Player 2!'
+            winner = 'The winner is Player 2!'
             break
-
-        draw_window(spaces, spaces2, letters)
+        if check_tie(letters):
+            winner = 'It\'s a Tie!'
+            break
 
     if winner != '':
         draw_winner(winner)
