@@ -1,5 +1,6 @@
 
 import pygame
+import random
 
 pygame.font.init()
 
@@ -29,66 +30,93 @@ def draw_window(spaces, spaces2, letters):
     pygame.display.update()
 
 
-def player_1_place(keys_pressed, letters, player_1_letter):
-    if keys_pressed[pygame.K_1] and letters[8] == '':
-        letters[8] = player_1_letter
+def player_1_place(keys_pressed, letters, player_1_letter, turn):
+    if turn == 0:
+        next_turn = 0
+        if keys_pressed[pygame.K_c] and letters[8] == '':
+            letters[8] = player_1_letter
+            next_turn = 1
 
-    if keys_pressed[pygame.K_2] and letters[7] == '':
-        letters[7] = player_1_letter
+        if keys_pressed[pygame.K_x] and letters[7] == '':
+            letters[7] = player_1_letter
+            next_turn = 1
 
-    if keys_pressed[pygame.K_3] and letters[6] == '':
-        letters[6] = player_1_letter
+        if keys_pressed[pygame.K_z] and letters[6] == '':
+            letters[6] = player_1_letter
+            next_turn = 1
 
-    if keys_pressed[pygame.K_4] and letters[5] == '':
-        letters[5] = player_1_letter
+        if keys_pressed[pygame.K_d] and letters[5] == '':
+            letters[5] = player_1_letter
+            next_turn = 1
 
-    if keys_pressed[pygame.K_5] and letters[4] == '':
-        letters[4] = player_1_letter
+        if keys_pressed[pygame.K_s] and letters[4] == '':
+            letters[4] = player_1_letter
+            next_turn = 1
 
-    if keys_pressed[pygame.K_6] and letters[3] == '':
-        letters[3] = player_1_letter
+        if keys_pressed[pygame.K_a] and letters[3] == '':
+            letters[3] = player_1_letter
+            next_turn = 1
 
-    if keys_pressed[pygame.K_7] and letters[2] == '':
-        letters[2] = player_1_letter
+        if keys_pressed[pygame.K_e] and letters[2] == '':
+            letters[2] = player_1_letter
+            next_turn = 1
 
-    if keys_pressed[pygame.K_8] and letters[1] == '':
-        letters[1] = player_1_letter
+        if keys_pressed[pygame.K_w] and letters[1] == '':
+            letters[1] = player_1_letter
+            next_turn = 1
 
-    if keys_pressed[pygame.K_9] and letters[0] == '':
-        letters[0] = player_1_letter
+        if keys_pressed[pygame.K_q] and letters[0] == '':
+            letters[0] = player_1_letter
+            next_turn = 1
 
-    return letters
+        if next_turn == 1:
+            turn = 1
+
+    return [letters, turn]
 
 
-def player_2_place(keys_pressed, letters, player_2_letter):
-    if keys_pressed[pygame.K_1] and letters[8] == '':
-        letters[8] = player_2_letter
+def player_2_place(keys_pressed, letters, player_2_letter, turn):
+    if turn == 1:
+        next_turn = 0
+        if keys_pressed[pygame.K_9] and letters[8] == '':
+            letters[8] = player_2_letter
+            next_turn = 1
 
-    if keys_pressed[pygame.K_2] and letters[7] == '':
-        letters[7] = player_2_letter
+        if keys_pressed[pygame.K_8] and letters[7] == '':
+            letters[7] = player_2_letter
+            next_turn = 1
 
-    if keys_pressed[pygame.K_3] and letters[6] == '':
-        letters[6] = player_2_letter
+        if keys_pressed[pygame.K_7] and letters[6] == '':
+            letters[6] = player_2_letter
+            next_turn = 1
 
-    if keys_pressed[pygame.K_4] and letters[5] == '':
-        letters[5] = player_2_letter
+        if keys_pressed[pygame.K_o] and letters[5] == '':
+            letters[5] = player_2_letter
+            next_turn = 1
 
-    if keys_pressed[pygame.K_5] and letters[4] == '':
-        letters[4] = player_2_letter
+        if keys_pressed[pygame.K_i] and letters[4] == '':
+            letters[4] = player_2_letter
+            next_turn = 1
 
-    if keys_pressed[pygame.K_6] and letters[3] == '':
-        letters[3] = player_2_letter
+        if keys_pressed[pygame.K_u] and letters[3] == '':
+            letters[3] = player_2_letter
+            next_turn = 1
 
-    if keys_pressed[pygame.K_7] and letters[2] == '':
-        letters[2] = player_2_letter
+        if keys_pressed[pygame.K_l] and letters[2] == '':
+            letters[2] = player_2_letter
+            next_turn = 1
 
-    if keys_pressed[pygame.K_8] and letters[1] == '':
-        letters[1] = player_2_letter
+        if keys_pressed[pygame.K_k] and letters[1] == '':
+            letters[1] = player_2_letter
+            next_turn = 1
 
-    if keys_pressed[pygame.K_9] and letters[0] == '':
-        letters[0] = player_2_letter
+        if keys_pressed[pygame.K_j] and letters[0] == '':
+            letters[0] = player_2_letter
+            next_turn = 1
 
-    return letters
+        if next_turn == 1:
+            turn = 0
+    return [letters, turn]
 
 
 def main_f():
@@ -102,10 +130,12 @@ def main_f():
     space_width = 160
     space_height = 160
 
-    turn = ''
+    turn = random.randint(0, 1)
 
-    player_1_letter = 'x'
-    player_2_letter = 'y'
+    print(turn)
+
+    player_1_letter = 'X'
+    player_2_letter = 'O'
 
     temp_row = 1
     for i in range(9):
@@ -130,8 +160,8 @@ def main_f():
             break
 
         keys_pressed = pygame.key.get_pressed()
-        letters = player_1_place(keys_pressed, letters, player_1_letter)
-        letters = player_2_place(keys_pressed, letters, player_2_letter)
+        letters, turn = player_1_place(keys_pressed, letters, player_1_letter, turn)
+        letters, turn = player_2_place(keys_pressed, letters, player_2_letter, turn)
 
         draw_window(spaces, spaces2, letters)
 
